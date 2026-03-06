@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -28,6 +29,10 @@
     .toggleLine { display: flex; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid #d9d9d9; border-radius: 10px; }
     .toggleLine span { font-size: 14px; }
     .pill { display:inline-block; font-size:12px; padding:2px 8px; border:1px solid #d9d9d9; border-radius:999px; margin-left:6px; opacity:.85; }
+    .stamp-badge { font-size:11px; padding:2px 7px; border-radius:999px; margin-left:6px; font-weight:600; }
+    .stamp-badge.vector { background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; }
+    .stamp-badge.hybrid { background:#fff3e0; color:#e65100; border:1px solid #ffcc80; }
+    .stamp-badge.jpeg  { background:#e3f2fd; color:#1565c0; border:1px solid #90caf9; }
   </style>
 </head>
 <body>
@@ -40,102 +45,109 @@
         <div class="meta" id="imgInfo">No image loaded.</div>
       </div>
 
-      <div class="field">
-        <label>Tile size (inches)</label>
-        <input id="imgIn" type="text" value='1"' />
-      </div>
+```
+  <div class="field">
+    <label>Tile size (inches)</label>
+    <input id="imgIn" type="text" value='1"' />
+  </div>
 
-      <div class="field">
-        <label>Gap around each cell (inches)</label>
-        <input id="gapIn" type="text" value='0"' />
-      </div>
+  <div class="field">
+    <label>Gap around each cell (inches)</label>
+    <input id="gapIn" type="text" value='0"' />
+  </div>
 
-      <div class="row2">
-        <div class="field">
-          <label>Final width (inches)</label>
-          <input id="outWIn" type="text" value='8.5"' />
-        </div>
-        <div class="field">
-          <label>Final height (inches)</label>
-          <input id="outHIn" type="text" value='11"' />
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Hex-packed circle overlay <span class="pill">Vector</span></label>
-        <div class="toggleLine">
-          <input id="hexToggle" type="checkbox" />
-          <span>Show hex-packed circles</span>
-        </div>
-        <div style="height:10px;"></div>
-        <label>Circle diameter (inches)</label>
-        <input id="circleDiaIn" type="text" value='6.25"' />
-      </div>
-
-      <div class="field">
-        <label>Export</label>
-        <select id="exportMode">
-          <option value="pdf">PDF</option>
-          <option value="png">PNG</option>
-        </select>
-
-        <div style="height:10px;"></div>
-
-        <div class="toggleLine">
-          <input id="vectorToggle" type="checkbox" checked />
-          <span>Vector outline tiling (color vector)</span>
-        </div>
-
-        <div class="meta">
-          PDF: vector (color) when safe; auto falls back to efficient raster-tiled PDF when too heavy.<br/>
-          PNG: exports a single bitmap at an efficient PPI and writes correct DPI metadata.
-        </div>
-      </div>
-
-      <div class="btnRow">
-        <button id="renderBtn">Reload Preview</button>
-        <button id="exportBtn">Export</button>
-      </div>
-
-      <div class="meta" id="renderInfo">
-        Tip: Drag preview to pan. Pinch/scroll to zoom. Export is PDF/PNG.
-      </div>
+  <div class="row2">
+    <div class="field">
+      <label>Final width (inches)</label>
+      <input id="outWIn" type="text" value='8.5"' />
     </div>
-
-    <!-- RIGHT COLUMN -->
-    <div class="stage">
-      <div class="hint">
-        Preview is a <b>6&quot;×6&quot; window</b> into the full output. Drag to pan. Pinch/scroll to zoom.
-      </div>
-      <canvas id="canvas"></canvas>
+    <div class="field">
+      <label>Final height (inches)</label>
+      <input id="outHIn" type="text" value='11"' />
     </div>
   </div>
 
+  <div class="field">
+    <label>Hex-packed circle overlay <span class="pill">Vector</span></label>
+    <div class="toggleLine">
+      <input id="hexToggle" type="checkbox" />
+      <span>Show hex-packed circles</span>
+    </div>
+    <div style="height:10px;"></div>
+    <label>Circle diameter (inches)</label>
+    <input id="circleDiaIn" type="text" value='6.25"' />
+  </div>
+
+  <div class="field">
+    <label>Export</label>
+    <select id="exportMode">
+      <option value="pdf">PDF</option>
+      <option value="png">PNG</option>
+    </select>
+
+    <div style="height:10px;"></div>
+
+    <div class="toggleLine">
+      <input id="vectorToggle" type="checkbox" checked />
+      <span>Vector outline tiling (color vector)</span>
+    </div>
+
+    <div class="meta">
+      PDF: auto-detects artwork type — flat/logo art uses full vector tracing; 
+      complex/photo art uses JPEG-in-SVG hybrid (small file, high quality). 
+      Falls back to raster-tiled PDF if too heavy.<br/>
+      PNG: exports a single bitmap at an efficient PPI and writes correct DPI metadata.
+    </div>
+  </div>
+
+  <div class="btnRow">
+    <button id="renderBtn">Reload Preview</button>
+    <button id="exportBtn">Export</button>
+  </div>
+
+  <div class="meta" id="renderInfo">
+    Tip: Drag preview to pan. Pinch/scroll to zoom. Export is PDF/PNG.
+  </div>
+</div>
+
+<!-- RIGHT COLUMN -->
+<div class="stage">
+  <div class="hint">
+    Preview is a <b>6&quot;×6&quot; window</b> into the full output. Drag to pan. Pinch/scroll to zoom.
+  </div>
+  <canvas id="canvas"></canvas>
+</div>
+```
+
+  </div>
+
   <!-- jsPDF -->
+
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <!-- svg2pdf plugin for jsPDF (enables pdf.svg(...)) -->
+
+  <!-- svg2pdf plugin for jsPDF -->
+
   <script src="https://cdn.jsdelivr.net/npm/svg2pdf.js@2.0.0/dist/svg2pdf.umd.min.js"></script>
-  <!-- ImageTracer (raster → SVG) -->
+
+  <!-- ImageTracer (raster → SVG, used for flat/logo artwork only) -->
+
   <script src="https://cdn.jsdelivr.net/npm/imagetracerjs@1.2.6/imagetracer_v1.2.6.js"></script>
 
   <script>
     // ---------------- PREVIEW SETTINGS ----------------
-    const DPI = 200;               // only used for parsing px->in
-    const PREVIEW_IN = 6;          // preview window is 6" x 6"
+    const DPI = 200;
+    const PREVIEW_IN = 6;
     const PREVIEW_CSS_PX = 420;
-    const PREVIEW_PPI = 200;       // preview render PPI (safe on mobile)
+    const PREVIEW_PPI = 200;
 
     // ---------------- EXPORT POLICY ----------------
-    // Vector stamping budget (iOS-safe; adjust up on desktop)
     const MAX_VECTOR_STAMPS = 2200;
 
-    // Trace bounds (iOS-safe)
+    // Trace bounds (used for flat/logo art only)
     const MAX_TRACE_DIM_PX_CAP = 1800;
     const MIN_TRACE_DIM_PX = 900;
-
-    // Color vector tuning
-    const TRACE_DETAIL = 1.10;     // 1.0–1.25
-    const TRACE_COLORS = 12;       // 8–16 typical
+    const TRACE_DETAIL = 1.10;
+    const TRACE_COLORS = 12;
 
     // Raster fallback PDF tuning
     const RASTER_TILE_IN = 6;
@@ -146,29 +158,34 @@
     // PNG export tuning + caps
     const PNG_PPI_MIN = 120;
     const PNG_PPI_MAX = 300;
-    const MAX_CANVAS_DIM = 8192;      // safer cross-browser
-    const MAX_CANVAS_PIXELS = 40e6;   // ~40MP safety
+    const MAX_CANVAS_DIM = 8192;
+    const MAX_CANVAS_PIXELS = 40e6;
+
+    // Smart stamp thresholds
+    const FLAT_COLOR_THRESHOLD = 48;       // unique 5-bit quantized colors
+    const GRADIENT_SCORE_RATIO = 0.15;     // fraction of pixels with soft gradient delta
+    const HYBRID_JPEG_QUALITY = 0.88;
+    const HYBRID_TARGET_PPI = 180;
 
     // ------------------------------------------------
-    const fileInput = document.getElementById('fileInput');
-    const imgInEl = document.getElementById('imgIn');
-    const gapInEl = document.getElementById('gapIn');
-    const outWInEl = document.getElementById('outWIn');
-    const outHInEl = document.getElementById('outHIn');
-    const hexToggleEl = document.getElementById('hexToggle');
-    const circleDiaInEl = document.getElementById('circleDiaIn');
-    const vectorToggleEl = document.getElementById('vectorToggle');
+    const fileInput    = document.getElementById('fileInput');
+    const imgInEl      = document.getElementById('imgIn');
+    const gapInEl      = document.getElementById('gapIn');
+    const outWInEl     = document.getElementById('outWIn');
+    const outHInEl     = document.getElementById('outHIn');
+    const hexToggleEl  = document.getElementById('hexToggle');
+    const circleDiaInEl= document.getElementById('circleDiaIn');
+    const vectorToggleEl= document.getElementById('vectorToggle');
     const exportModeEl = document.getElementById('exportMode');
-    const renderBtn = document.getElementById('renderBtn');
-    const exportBtn = document.getElementById('exportBtn');
-
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const imgInfo = document.getElementById('imgInfo');
-    const renderInfo = document.getElementById('renderInfo');
+    const renderBtn    = document.getElementById('renderBtn');
+    const exportBtn    = document.getElementById('exportBtn');
+    const canvas       = document.getElementById('canvas');
+    const ctx          = canvas.getContext('2d');
+    const imgInfo      = document.getElementById('imgInfo');
+    const renderInfo   = document.getElementById('renderInfo');
 
     let originalBitmap = null;
-    let originalMeta = null;
+    let originalMeta   = null;
     let originalFileBaseName = "Artwork";
 
     // Preview camera (in OUTPUT inches)
@@ -207,30 +224,29 @@
     }
 
     function setupPreviewCanvas() {
-      canvas.style.width = PREVIEW_CSS_PX + "px";
+      canvas.style.width  = PREVIEW_CSS_PX + "px";
       canvas.style.height = PREVIEW_CSS_PX + "px";
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.round(PREVIEW_CSS_PX * dpr);
+      canvas.width  = Math.round(PREVIEW_CSS_PX * dpr);
       canvas.height = Math.round(PREVIEW_CSS_PX * dpr);
       ctx.setTransform(1,0,0,1,0,0);
     }
 
     async function loadAndCacheOriginal(file) {
       originalFileBaseName = (file.name || "Artwork").replace(/\.[^/.]+$/, "");
-
       if (originalBitmap && typeof originalBitmap.close === "function") {
         try { originalBitmap.close(); } catch {}
       }
       originalBitmap = null;
-      originalMeta = null;
+      originalMeta   = null;
 
       const url = URL.createObjectURL(file);
       try {
         if ("createImageBitmap" in window) {
           const blob = await fetch(url).then(r => r.blob());
-          const bmp = await createImageBitmap(blob);
+          const bmp  = await createImageBitmap(blob);
           originalBitmap = bmp;
-          originalMeta = { w: bmp.width, h: bmp.height };
+          originalMeta   = { w: bmp.width, h: bmp.height };
           imgInfo.textContent = `Loaded: ${bmp.width}×${bmp.height}px (cached as ImageBitmap).`;
           return;
         }
@@ -238,7 +254,7 @@
           const img = new Image();
           img.onload = () => {
             originalBitmap = img;
-            originalMeta = { w: img.naturalWidth || img.width, h: img.naturalHeight || img.height };
+            originalMeta   = { w: img.naturalWidth || img.width, h: img.naturalHeight || img.height };
             imgInfo.textContent = `Loaded: ${originalMeta.w}×${originalMeta.h}px (cached as Image).`;
             resolve();
           };
@@ -266,27 +282,21 @@
     });
 
     // ---------- drawing ----------
-    // BOXED (no stretch, no crop): contain/letterbox into the tile
     function drawBoxedTileAtIn(targetCtx, pxPerIn, xIn, yIn, tileIn) {
       if (!originalBitmap || !originalMeta) return;
-
-      const srcW = originalMeta.w;
-      const srcH = originalMeta.h;
+      const srcW  = originalMeta.w;
+      const srcH  = originalMeta.h;
       const tilePx = tileIn * pxPerIn;
-
-      const scale = Math.min(tilePx / srcW, tilePx / srcH); // contain
+      const scale  = Math.min(tilePx / srcW, tilePx / srcH);
       const drawWIn = (srcW * scale) / pxPerIn;
       const drawHIn = (srcH * scale) / pxPerIn;
-
       const dx = xIn + (tileIn - drawWIn) / 2;
       const dy = yIn + (tileIn - drawHIn) / 2;
-
       targetCtx.drawImage(originalBitmap, dx, dy, drawWIn, drawHIn);
     }
 
     function renderArtworkViewport(targetCtx, pxPerIn, cfg) {
       const { tileInches, gapIn, hexOn, circleDiaIn, camXIn, camYIn, viewWIn, viewHIn } = cfg;
-
       const wPx = Math.max(1, Math.round(viewWIn * pxPerIn));
       const hPx = Math.max(1, Math.round(viewHIn * pxPerIn));
 
@@ -295,16 +305,15 @@
       targetCtx.fillStyle = "#fff";
       targetCtx.fillRect(0,0,wPx,hPx);
 
-      targetCtx.setTransform(pxPerIn, 0, 0, pxPerIn, 0, 0);
+      targetCtx.setTransform(pxPerIn,0,0,pxPerIn,0,0);
       targetCtx.imageSmoothingEnabled = true;
       targetCtx.imageSmoothingQuality = "high";
 
-      const stepIn = (tileInches + gapIn) / 1.5;
-
-      const startC = Math.floor(camXIn / stepIn) - 2;
-      const startR = Math.floor(camYIn / stepIn) - 2;
-      const endC   = Math.ceil((camXIn + viewWIn) / stepIn) + 2;
-      const endR   = Math.ceil((camYIn + viewHIn) / stepIn) + 2;
+      const stepIn  = (tileInches + gapIn) / 1.5;
+      const startC  = Math.floor(camXIn / stepIn) - 2;
+      const startR  = Math.floor(camYIn / stepIn) - 2;
+      const endC    = Math.ceil((camXIn + viewWIn) / stepIn) + 2;
+      const endR    = Math.ceil((camYIn + viewHIn) / stepIn) + 2;
 
       let approxCols = Math.max(0, endC - startC);
       let approxRows = Math.max(0, endR - startR);
@@ -312,33 +321,28 @@
       for (let r = startR; r < endR; r++) {
         for (let c = startC; c < endC; c++) {
           if (((r + c) % 2) !== 0) continue;
-
           const xFull = c * stepIn;
           const yFull = r * stepIn;
-
           const x = xFull - camXIn;
           const y = yFull - camYIn;
-
           if (x > viewWIn || y > viewHIn || x + tileInches < 0 || y + tileInches < 0) continue;
           drawBoxedTileAtIn(targetCtx, pxPerIn, x, y, tileInches);
         }
       }
 
       if (hexOn) {
-        const dia = circleDiaIn;
-        const rr = dia / 2;
+        const dia   = circleDiaIn;
+        const rr    = dia / 2;
         const xStep = dia;
         const yStep = dia * Math.sqrt(3) / 2;
-
         targetCtx.save();
-        targetCtx.lineWidth = Math.max(1/pxPerIn, 0.01);
+        targetCtx.lineWidth   = Math.max(1/pxPerIn, 0.01);
         targetCtx.globalAlpha = 0.65;
 
         let row = Math.floor((camYIn - rr) / yStep);
         for (let cyFull = row * yStep; cyFull <= camYIn + viewHIn + rr; cyFull += yStep, row++) {
           const xOffset = (row % 2 === 0) ? 0 : xStep / 2;
           let col = Math.floor((camXIn - rr - xOffset) / xStep);
-
           for (let cxFull = col * xStep + xOffset; cxFull <= camXIn + viewWIn + rr; cxFull += xStep) {
             const cx = cxFull - camXIn;
             const cy = cyFull - camYIn;
@@ -355,17 +359,17 @@
 
     function estimateVectorStamps(outWIn, outHIn, tileInches, gapIn) {
       const stepIn = (tileInches + gapIn) / 1.5;
-      const cols = Math.ceil(outWIn / stepIn) + 1;
-      const rows = Math.ceil(outHIn / stepIn) + 1;
+      const cols   = Math.ceil(outWIn / stepIn) + 1;
+      const rows   = Math.ceil(outHIn / stepIn) + 1;
       return Math.ceil((cols * rows) / 2);
     }
 
     function renderPreview() {
-      const outWIn = parseInchesOrDefault(outWInEl.value, 8.5);
-      const outHIn = parseInchesOrDefault(outHInEl.value, 11);
-      const tileInches = parseInchesOrDefault(imgInEl.value, 1);
-      const gapIn  = Math.max(0, parseInchesOrDefault(gapInEl.value, 0));
-      const hexOn  = !!hexToggleEl.checked;
+      const outWIn      = parseInchesOrDefault(outWInEl.value, 8.5);
+      const outHIn      = parseInchesOrDefault(outHInEl.value, 11);
+      const tileInches  = parseInchesOrDefault(imgInEl.value, 1);
+      const gapIn       = Math.max(0, parseInchesOrDefault(gapInEl.value, 0));
+      const hexOn       = !!hexToggleEl.checked;
       const circleDiaIn = parseInchesOrDefault(circleDiaInEl.value, 6.25);
 
       clampPreviewCam(outWIn, outHIn);
@@ -374,12 +378,12 @@
       const viewWIn = PREVIEW_IN / previewCam.zoom;
       const viewHIn = PREVIEW_IN / previewCam.zoom;
 
-      const off = document.createElement("canvas");
-      off.width  = Math.max(1, Math.round(viewWIn * PREVIEW_PPI));
-      off.height = Math.max(1, Math.round(viewHIn * PREVIEW_PPI));
-      const octx = off.getContext("2d");
+      const off    = document.createElement("canvas");
+      off.width    = Math.max(1, Math.round(viewWIn * PREVIEW_PPI));
+      off.height   = Math.max(1, Math.round(viewHIn * PREVIEW_PPI));
+      const octx   = off.getContext("2d");
 
-      const meta = renderArtworkViewport(octx, PREVIEW_PPI, {
+      renderArtworkViewport(octx, PREVIEW_PPI, {
         tileInches, gapIn, hexOn, circleDiaIn,
         camXIn: previewCam.xIn, camYIn: previewCam.yIn,
         viewWIn, viewHIn
@@ -403,10 +407,10 @@
     // ---------- download helpers ----------
     function downloadBlob(blob, filename) {
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
+      const a   = document.createElement("a");
+      a.href     = url;
       a.download = filename;
-      a.rel = "noopener";
+      a.rel      = "noopener";
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -414,10 +418,7 @@
     }
 
     async function deliverPdfBlob(blob, filename) {
-      // download first
       try { downloadBlob(blob, filename); } catch {}
-
-      // iOS reliable: share sheet
       if (navigator.share) {
         try {
           const file = new File([blob], filename, { type: "application/pdf" });
@@ -433,7 +434,6 @@
 
     // ---------- PNG DPI writer (adds/overwrites pHYs chunk) ----------
     function crc32(buf) {
-      // buf: Uint8Array
       let crc = 0xFFFFFFFF;
       for (let i = 0; i < buf.length; i++) {
         crc ^= buf[i];
@@ -446,77 +446,173 @@
     }
 
     async function setPngDpi(blob, dpi) {
-      const ab = await blob.arrayBuffer();
+      const ab    = await blob.arrayBuffer();
       const bytes = new Uint8Array(ab);
-
-      // PNG signature check
-      const sig = [137,80,78,71,13,10,26,10];
+      const sig   = [137,80,78,71,13,10,26,10];
       for (let i = 0; i < 8; i++) if (bytes[i] !== sig[i]) return blob;
 
-      // Build pHYs chunk
-      const ppm = Math.round(dpi * 39.37007874015748); // pixels per meter
+      const ppm      = Math.round(dpi * 39.37007874015748);
       const physData = new Uint8Array(9);
-      const dv = new DataView(physData.buffer);
-      dv.setUint32(0, ppm); // X
-      dv.setUint32(4, ppm); // Y
-      physData[8] = 1; // unit: meter
+      const dv       = new DataView(physData.buffer);
+      dv.setUint32(0, ppm);
+      dv.setUint32(4, ppm);
+      physData[8] = 1;
 
-      const type = new TextEncoder().encode("pHYs");
+      const type   = new TextEncoder().encode("pHYs");
       const crcBuf = new Uint8Array(type.length + physData.length);
       crcBuf.set(type, 0);
       crcBuf.set(physData, type.length);
       const crc = crc32(crcBuf);
 
       const chunk = new Uint8Array(4 + 4 + physData.length + 4);
-      const dv2 = new DataView(chunk.buffer);
-      dv2.setUint32(0, physData.length);     // length
-      chunk.set(type, 4);                    // type
-      chunk.set(physData, 8);                // data
-      dv2.setUint32(8 + physData.length, crc); // crc
+      const dv2   = new DataView(chunk.buffer);
+      dv2.setUint32(0, physData.length);
+      chunk.set(type, 4);
+      chunk.set(physData, 8);
+      dv2.setUint32(8 + physData.length, crc);
 
-      // Remove existing pHYs chunks and insert after IHDR
       let out = [];
-      out.push(bytes.slice(0, 8)); // signature
+      out.push(bytes.slice(0, 8));
 
-      let pos = 8;
-      let inserted = false;
+      let pos = 8, inserted = false;
       while (pos < bytes.length) {
-        const len = new DataView(bytes.buffer, pos, 4).getUint32(0);
-        const t0 = bytes[pos + 4], t1 = bytes[pos + 5], t2 = bytes[pos + 6], t3 = bytes[pos + 7];
-        const typeStr = String.fromCharCode(t0,t1,t2,t3);
+        const len      = new DataView(bytes.buffer, pos, 4).getUint32(0);
+        const t0 = bytes[pos+4], t1 = bytes[pos+5], t2 = bytes[pos+6], t3 = bytes[pos+7];
+        const typeStr  = String.fromCharCode(t0,t1,t2,t3);
         const chunkTotal = 12 + len;
+        const thisChunk  = bytes.slice(pos, pos + chunkTotal);
 
-        const thisChunk = bytes.slice(pos, pos + chunkTotal);
-
-        if (typeStr !== "pHYs") {
-          out.push(thisChunk);
-        }
-
-        if (!inserted && typeStr === "IHDR") {
-          out.push(chunk);
-          inserted = true;
-        }
+        if (typeStr !== "pHYs") out.push(thisChunk);
+        if (!inserted && typeStr === "IHDR") { out.push(chunk); inserted = true; }
 
         pos += chunkTotal;
         if (typeStr === "IEND") break;
       }
 
-      const mergedLen = out.reduce((s,a)=>s+a.length,0);
-      const merged = new Uint8Array(mergedLen);
+      const mergedLen = out.reduce((s,a) => s + a.length, 0);
+      const merged    = new Uint8Array(mergedLen);
       let o = 0;
       for (const part of out) { merged.set(part, o); o += part.length; }
-
       return new Blob([merged], { type: "image/png" });
     }
 
-    // ---------- VECTOR tracing: COLOR mode with better transparency handling + better key stripping ----------
+    // =====================================================================
+    // SMART STAMP BUILDER
+    // Replaces the old traceToSvgStamp with auto-detection:
+    //   - Flat/logo art  → full ImageTracer vector (smallest file, perfect edges)
+    //   - Complex/photo  → JPEG-in-SVG hybrid     (small file, photographic quality)
+    // =====================================================================
+
+    /**
+     * Analyze a sample of the image to decide the best vectorization strategy.
+     * Returns { isFlat, hasGradients, uniqueColorCount, gradientScore }
+     */
+    function analyzeImageComplexity(bitmap, meta) {
+      const size   = 200; // small sample is plenty
+      const canvas = document.createElement("canvas");
+      canvas.width  = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(bitmap, 0, 0, size, size);
+
+      const { data } = ctx.getImageData(0, 0, size, size);
+      const uniqueColors = new Set();
+      let gradientScore  = 0;
+      const total        = size * size;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const a = data[i + 3];
+        if (a < 8) continue; // skip fully transparent
+
+        // 5-bit quantize each channel → compact color key
+        const r = data[i]     >> 3;
+        const g = data[i + 1] >> 3;
+        const b = data[i + 2] >> 3;
+        uniqueColors.add((r << 10) | (g << 5) | b);
+
+        // Soft gradient detection: pixel-to-next-pixel delta in mid range
+        if (i + 4 < data.length) {
+          const dr = Math.abs(data[i]     - data[i + 4]);
+          const dg = Math.abs(data[i + 1] - data[i + 5]);
+          const db = Math.abs(data[i + 2] - data[i + 6]);
+          const delta = dr + dg + db;
+          if (delta > 10 && delta < 80) gradientScore++;
+        }
+      }
+
+      const gradientRatio = gradientScore / total;
+
+      return {
+        uniqueColorCount: uniqueColors.size,
+        gradientScore,
+        isFlat:       uniqueColors.size  < FLAT_COLOR_THRESHOLD,
+        hasGradients: gradientRatio       > GRADIENT_SCORE_RATIO
+      };
+    }
+
+    /**
+     * Build a hybrid SVG stamp: JPEG raster embedded inside SVG.
+     * ~10–30 KB vs 500 KB+ for a full raster tile.
+     * Looks photographic. Tiles efficiently via svg2pdf just like the vector path.
+     */
+    function buildHybridSvgStamp(tileInches, quality) {
+      if (!originalBitmap || !originalMeta) throw new Error("No image loaded.");
+
+      const tilePx = Math.round(tileInches * HYBRID_TARGET_PPI);
+      const srcW   = originalMeta.w;
+      const srcH   = originalMeta.h;
+
+      const tcan  = document.createElement("canvas");
+      tcan.width  = tilePx;
+      tcan.height = tilePx;
+      const tctx  = tcan.getContext("2d");
+
+      // White background (JPEG has no alpha)
+      tctx.fillStyle = "#fff";
+      tctx.fillRect(0, 0, tilePx, tilePx);
+
+      // Contain-fit (same as drawBoxedTileAtIn)
+      const scale  = Math.min(tilePx / srcW, tilePx / srcH);
+      const dw     = srcW * scale;
+      const dh     = srcH * scale;
+      const dx     = (tilePx - dw) / 2;
+      const dy     = (tilePx - dh) / 2;
+
+      tctx.imageSmoothingEnabled  = true;
+      tctx.imageSmoothingQuality  = "high";
+      tctx.drawImage(originalBitmap, dx, dy, dw, dh);
+
+      const jpegDataUrl = tcan.toDataURL("image/jpeg", quality ?? HYBRID_JPEG_QUALITY);
+
+      // Wrap JPEG in SVG — svg2pdf will stamp this just like a pure vector stamp
+      const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${tilePx} ${tilePx}" width="${tilePx}" height="${tilePx}"><image x="0" y="0" width="${tilePx}" height="${tilePx}" href="${jpegDataUrl}" preserveAspectRatio="xMidYMid meet"/></svg>`;
+
+      const holder = document.createElement("div");
+      holder.style.cssText = "position:fixed;left:-99999px;top:-99999px";
+      holder.innerHTML     = svgStr;
+      document.body.appendChild(holder);
+
+      const svgEl = holder.querySelector("svg");
+      if (!svgEl) {
+        document.body.removeChild(holder);
+        throw new Error("Failed to build hybrid SVG stamp.");
+      }
+
+      svgEl.remove();
+      document.body.removeChild(holder);
+      return { svgEl, mode: "hybrid" };
+    }
+
+    /**
+     * Full ImageTracer vector stamp — best for logos, flat color artwork.
+     * Unchanged from original except returns { svgEl, mode: "vector" }.
+     */
     function computeTraceMaxDimPx(tileInches) {
-      // Aim ~350 px per inch of tile (then clamp)
       const target = Math.round(tileInches * 350);
       return clamp(target, MIN_TRACE_DIM_PX, MAX_TRACE_DIM_PX_CAP);
     }
 
-    async function traceToSvgStamp(traceMaxDimPx, colors, detail) {
+    async function buildVectorSvgStamp(traceMaxDimPx, colors, detail) {
       if (!originalBitmap || !originalMeta) throw new Error("No image loaded.");
 
       const srcW = originalMeta.w;
@@ -526,42 +622,40 @@
       const tW = Math.max(1, Math.round(srcW / scaleDown));
       const tH = Math.max(1, Math.round(srcH / scaleDown));
 
-      const tcan = document.createElement("canvas");
-      tcan.width = tW;
+      const tcan  = document.createElement("canvas");
+      tcan.width  = tW;
       tcan.height = tH;
-      const tctx = tcan.getContext("2d", { willReadFrequently: true });
+      const tctx  = tcan.getContext("2d", { willReadFrequently: true });
 
-      // Chroma-key background for transparency
       const KEY = { r: 255, g: 0, b: 255 };
       tctx.fillStyle = `rgb(${KEY.r},${KEY.g},${KEY.b})`;
       tctx.fillRect(0, 0, tW, tH);
-
       tctx.imageSmoothingEnabled = true;
       tctx.imageSmoothingQuality = "high";
       tctx.drawImage(originalBitmap, 0, 0, tW, tH);
 
-      // Flatten alpha fringe: transparent -> KEY, otherwise force alpha=255 (reduces glitch paths)
-      const img = tctx.getImageData(0, 0, tW, tH);
-      const d = img.data;
+      // Flatten alpha fringe → chroma key
+      const img  = tctx.getImageData(0, 0, tW, tH);
+      const d    = img.data;
       const TRANSPARENT_A = 8;
       for (let i = 0; i < d.length; i += 4) {
         const a = d[i + 3];
         if (a <= TRANSPARENT_A) {
-          d[i] = KEY.r; d[i + 1] = KEY.g; d[i + 2] = KEY.b; d[i + 3] = 255;
+          d[i] = KEY.r; d[i+1] = KEY.g; d[i+2] = KEY.b; d[i+3] = 255;
         } else {
-          d[i + 3] = 255;
+          d[i+3] = 255;
         }
       }
       tctx.putImageData(img, 0, 0);
 
       const options = {
-        numberofcolors: clamp(Math.round(colors), 2, 32),
-        colorsampling: 2,
+        numberofcolors:   clamp(Math.round(colors), 2, 32),
+        colorsampling:    2,
         colorquantcycles: 3,
-        scale: 1,
-        pathomit: 12,
-        ltres: 1 / clamp(detail, 0.7, 2.5),
-        qtres: 1 / clamp(detail, 0.7, 2.5),
+        scale:            1,
+        pathomit:         12,
+        ltres:            1 / clamp(detail, 0.7, 2.5),
+        qtres:            1 / clamp(detail, 0.7, 2.5),
         rightangleenhance: true
       };
 
@@ -570,8 +664,8 @@
         options
       );
 
-      // Strong key-stripping: remove any element that references KEY in fill/stroke OR inline style
-      const keyRgb = `rgb(${KEY.r},${KEY.g},${KEY.b})`; // rgb(255,0,255)
+      // Strip chroma-key color paths
+      const keyRgb = `rgb(${KEY.r},${KEY.g},${KEY.b})`;
       svgStr = svgStr.replace(
         new RegExp(
           `<([^\\s>\\/]+)([^>]*)(?:` +
@@ -585,9 +679,7 @@
       );
 
       const holder = document.createElement("div");
-      holder.style.position = "fixed";
-      holder.style.left = "-99999px";
-      holder.style.top = "-99999px";
+      holder.style.cssText = "position:fixed;left:-99999px;top:-99999px";
       holder.innerHTML = svgStr.trim();
       document.body.appendChild(holder);
 
@@ -600,8 +692,7 @@
       svgEl.setAttribute("preserveAspectRatio", "xMidYMid meet");
       svgEl.setAttribute("viewBox", `0 0 ${tW} ${tH}`);
 
-      // If it was a white logo (common), it can disappear on white PDF.
-      // Detect “mostly white” and force black.
+      // Detect mostly-white logos and force black so they show on white PDF
       const nodes = svgEl.querySelectorAll("[fill],[stroke]");
       let bright = 0, total = 0;
       const isBright = (v) => {
@@ -609,15 +700,14 @@
         if (!v || v === "none") return false;
         if (v.startsWith("#")) {
           const hex = v.slice(1);
-          const n = parseInt(hex.length === 3 ? hex.split("").map(c=>c+c).join("") : hex, 16);
+          const n   = parseInt(hex.length === 3 ? hex.split("").map(c=>c+c).join("") : hex, 16);
           const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
           return (0.2126*r + 0.7152*g + 0.0722*b) > 235;
         }
         if (v.startsWith("rgb(")) {
           const m = v.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
           if (!m) return false;
-          const r = +m[1], g = +m[2], b = +m[3];
-          return (0.2126*r + 0.7152*g + 0.0722*b) > 235;
+          return (0.2126*+m[1] + 0.7152*+m[2] + 0.0722*+m[3]) > 235;
         }
         return false;
       };
@@ -629,24 +719,58 @@
       });
       if (total > 0 && (bright / total) > 0.6) {
         svgEl.querySelectorAll("[fill]").forEach(el => {
-          if ((el.getAttribute("fill") || "").toLowerCase() !== "none") el.setAttribute("fill", "#000");
+          if ((el.getAttribute("fill")||"").toLowerCase() !== "none") el.setAttribute("fill","#000");
         });
         svgEl.querySelectorAll("[stroke]").forEach(el => {
-          if ((el.getAttribute("stroke") || "").toLowerCase() !== "none") el.setAttribute("stroke", "#000");
+          if ((el.getAttribute("stroke")||"").toLowerCase() !== "none") el.setAttribute("stroke","#000");
         });
       }
 
       svgEl.remove();
       document.body.removeChild(holder);
-      return svgEl;
+      return { svgEl, mode: "vector" };
     }
 
-    async function tileSvgPatternToPdf(pdf, svgStamp, outWIn, outHIn, tileInches, gapIn) {
-      const tilePt = tileInches * 72;
-      const stepPt = ((tileInches + gapIn) / 1.5) * 72;
+    /**
+     * MAIN ENTRY: pick the best stamp strategy automatically.
+     *
+     *  Flat art  (< 48 unique quantized colors, no heavy gradients)
+     *    → full vector trace via ImageTracer
+     *    → smallest SVG, sharpest edges, perfect for logos
+     *
+     *  Complex / photographic art
+     *    → JPEG embedded in SVG (hybrid)
+     *    → photographic quality, ~10–40 KB per stamp vs 500 KB+ PNG
+     *
+     * Returns { svgEl, mode } where mode is "vector" | "hybrid"
+     */
+    async function buildBestStamp(tileInches) {
+      if (!originalBitmap || !originalMeta) throw new Error("No image loaded.");
 
-      const pageWPt = outWIn * 72;
-      const pageHPt = outHIn * 72;
+      const complexity = analyzeImageComplexity(originalBitmap, originalMeta);
+      console.log("[Stamp analysis]", complexity);
+
+      if (complexity.isFlat && !complexity.hasGradients) {
+        renderInfo.textContent =
+          `Detected flat/logo artwork (${complexity.uniqueColorCount} colors). Using full vector trace…`;
+        const traceMaxDim = computeTraceMaxDimPx(tileInches);
+        return await buildVectorSvgStamp(traceMaxDim, TRACE_COLORS, TRACE_DETAIL);
+      } else {
+        renderInfo.textContent =
+          `Detected complex/photo artwork (${complexity.uniqueColorCount} colors, ` +
+          `gradient score ${complexity.gradientScore}). Using JPEG-in-SVG hybrid stamp…`;
+        return buildHybridSvgStamp(tileInches, HYBRID_JPEG_QUALITY);
+      }
+    }
+
+    // =====================================================================
+    // PDF TILING (unchanged interface — accepts svgEl from buildBestStamp)
+    // =====================================================================
+    async function tileSvgPatternToPdf(pdf, svgStamp, outWIn, outHIn, tileInches, gapIn) {
+      const tilePt  = tileInches * 72;
+      const stepPt  = ((tileInches + gapIn) / 1.5) * 72;
+      const pageWPt = outWIn  * 72;
+      const pageHPt = outHIn  * 72;
 
       const cols = Math.ceil(pageWPt / stepPt) + 1;
       const rows = Math.ceil(pageHPt / stepPt) + 1;
@@ -663,7 +787,7 @@
     }
 
     function drawHexOverlayPdf(pdf, outWIn, outHIn, diaIn) {
-      const rIn = diaIn / 2;
+      const rIn   = diaIn / 2;
       const xStep = diaIn;
       const yStep = diaIn * Math.sqrt(3) / 2;
       pdf.setLineWidth(Math.max(0.5, 0.01 * 72));
@@ -677,10 +801,9 @@
       }
     }
 
-    // ---------- Raster tile renderer (used for PDF fallback and PNG export) ----------
+    // ---------- Raster tile renderer (PDF fallback + PNG export) ----------
     function renderArtworkTileRaster(targetCtx, pxPerIn, cfg) {
       const { tileInches, gapIn, hexOn, circleDiaIn, x0In, y0In, wIn, hIn } = cfg;
-
       const wPx = Math.max(1, Math.round(wIn * pxPerIn));
       const hPx = Math.max(1, Math.round(hIn * pxPerIn));
 
@@ -694,7 +817,6 @@
       targetCtx.imageSmoothingQuality = "high";
 
       const stepIn = (tileInches + gapIn) / 1.5;
-
       const startC = Math.floor(x0In / stepIn) - 2;
       const startR = Math.floor(y0In / stepIn) - 2;
       const endC   = Math.ceil((x0In + wIn) / stepIn) + 2;
@@ -703,26 +825,23 @@
       for (let r = startR; r < endR; r++) {
         for (let c = startC; c < endC; c++) {
           if (((r + c) % 2) !== 0) continue;
-
           const xFull = c * stepIn;
           const yFull = r * stepIn;
-
           const x = xFull - x0In;
           const y = yFull - y0In;
-
           if (x > wIn || y > hIn || x + tileInches < 0 || y + tileInches < 0) continue;
           drawBoxedTileAtIn(targetCtx, pxPerIn, x, y, tileInches);
         }
       }
 
       if (hexOn) {
-        const dia = circleDiaIn;
-        const rr = dia / 2;
+        const dia   = circleDiaIn;
+        const rr    = dia / 2;
         const xStep = dia;
         const yStep = dia * Math.sqrt(3) / 2;
 
         targetCtx.save();
-        targetCtx.lineWidth = Math.max(1/pxPerIn, 0.01);
+        targetCtx.lineWidth   = Math.max(1/pxPerIn, 0.01);
         targetCtx.globalAlpha = 0.65;
 
         let row = Math.floor((y0In - rr) / yStep);
@@ -746,8 +865,7 @@
       if (!originalMeta) return ppiMax;
       const nativeW = originalMeta.w / outWIn;
       const nativeH = originalMeta.h / outHIn;
-      const native = Math.min(nativeW, nativeH);
-      // about 2x native generally looks crisp without inventing too much
+      const native  = Math.min(nativeW, nativeH);
       return clamp(Math.round(native * 2), ppiMin, ppiMax);
     }
 
@@ -761,57 +879,55 @@
 
       const pdf = new jsPDF({
         orientation: (wPt >= hPt) ? "landscape" : "portrait",
-        unit: "pt",
-        format: [wPt, hPt],
-        compress: true
+        unit:        "pt",
+        format:      [wPt, hPt],
+        compress:    true
       });
 
       const estStamps = estimateVectorStamps(outWIn, outHIn, tileInches, gapIn);
 
-      // Vector when safe
+      // Smart vector/hybrid path
       if (vectorToggleEl.checked && estStamps <= MAX_VECTOR_STAMPS) {
         try {
-          const traceMaxDim = computeTraceMaxDimPx(tileInches);
-          renderInfo.textContent = `PDF Vector: tracing once (max ${traceMaxDim}px)…`;
-          const svgStamp = await traceToSvgStamp(traceMaxDim, TRACE_COLORS, TRACE_DETAIL);
+          const { svgEl, mode } = await buildBestStamp(tileInches);
 
-          renderInfo.textContent = `PDF Vector: tiling ~${estStamps} stamps…`;
-          await tileSvgPatternToPdf(pdf, svgStamp, outWIn, outHIn, tileInches, gapIn);
+          renderInfo.textContent =
+            `PDF (${mode === "vector" ? "Full Vector" : "JPEG-in-SVG Hybrid"}): tiling ~${estStamps} stamps…`;
+
+          await tileSvgPatternToPdf(pdf, svgEl, outWIn, outHIn, tileInches, gapIn);
 
           if (hexOn) drawHexOverlayPdf(pdf, outWIn, outHIn, circleDiaIn);
 
           return pdf.output("blob");
         } catch (e) {
           console.error(e);
-          renderInfo.textContent = "PDF Vector failed. Falling back to raster tiled PDF…";
+          renderInfo.textContent = "Smart stamp failed. Falling back to raster tiled PDF…";
         }
       } else if (vectorToggleEl.checked && estStamps > MAX_VECTOR_STAMPS) {
-        renderInfo.textContent = `PDF Vector would place ~${estStamps} stamps. Falling back to raster…`;
+        renderInfo.textContent = `~${estStamps} stamps exceeds limit. Falling back to raster…`;
       }
 
       // Raster fallback (tiled JPEG inside PDF)
       const rasterPPI = computeEfficientRasterPPI(outWIn, outHIn, RASTER_PPI_MIN, RASTER_PPI_MAX);
-      const tileIn = RASTER_TILE_IN;
-      const cols = Math.ceil(outWIn / tileIn);
-      const rows = Math.ceil(outHIn / tileIn);
+      const tileIn    = RASTER_TILE_IN;
+      const cols      = Math.ceil(outWIn / tileIn);
+      const rows      = Math.ceil(outHIn  / tileIn);
 
       const tileCanvas = document.createElement("canvas");
-      let tctx = tileCanvas.getContext("2d");
-
+      let tctx;
       let count = 0;
       const total = cols * rows;
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
-          const x0 = c * tileIn;
-          const y0 = r * tileIn;
+          const x0  = c * tileIn;
+          const y0  = r * tileIn;
           const wIn = Math.min(tileIn, outWIn - x0);
-          const hIn = Math.min(tileIn, outHIn - y0);
-
+          const hIn = Math.min(tileIn, outHIn  - y0);
           const wPx = Math.max(1, Math.round(wIn * rasterPPI));
           const hPx = Math.max(1, Math.round(hIn * rasterPPI));
 
-          if (tileCanvas.width !== wPx) tileCanvas.width = wPx;
+          if (tileCanvas.width  !== wPx) tileCanvas.width  = wPx;
           if (tileCanvas.height !== hPx) tileCanvas.height = hPx;
           tctx = tileCanvas.getContext("2d");
 
@@ -824,29 +940,29 @@
           pdf.addImage(dataUrl, "JPEG", x0 * 72, y0 * 72, wIn * 72, hIn * 72);
 
           count++;
-          if (count % 8 === 0) renderInfo.textContent = `PDF Raster: ${count}/${total} tiles… (PPI ${rasterPPI})`;
+          if (count % 8 === 0)
+            renderInfo.textContent = `PDF Raster: ${count}/${total} tiles… (PPI ${rasterPPI})`;
         }
       }
 
       return pdf.output("blob");
     }
 
-    // ---------- Export: PNG (single canvas only; correct DPI metadata) ----------
+    // ---------- Export: PNG ----------
     async function exportPng(outWIn, outHIn, tileInches, gapIn, hexOn, circleDiaIn) {
-      const ppi = computeEfficientRasterPPI(outWIn, outHIn, PNG_PPI_MIN, PNG_PPI_MAX);
-      const wPx = Math.round(outWIn * ppi);
-      const hPx = Math.round(outHIn * ppi);
+      const ppi  = computeEfficientRasterPPI(outWIn, outHIn, PNG_PPI_MIN, PNG_PPI_MAX);
+      const wPx  = Math.round(outWIn * ppi);
+      const hPx  = Math.round(outHIn * ppi);
 
-      // caps
       if (wPx > MAX_CANVAS_DIM || hPx > MAX_CANVAS_DIM || (wPx * hPx) > MAX_CANVAS_PIXELS) {
         throw new Error(
           `PNG too large for browser (${wPx}×${hPx}px @ ${ppi} PPI). Use PDF export for huge sheets.`
         );
       }
 
-      const ex = document.createElement("canvas");
-      ex.width = wPx;
-      ex.height = hPx;
+      const ex    = document.createElement("canvas");
+      ex.width    = wPx;
+      ex.height   = hPx;
       const exCtx = ex.getContext("2d");
 
       renderInfo.textContent = `PNG: rendering ${wPx}×${hPx}px @ ${ppi} PPI…`;
@@ -859,7 +975,6 @@
       const blob = await new Promise((resolve) => ex.toBlob(resolve, "image/png"));
       if (!blob) throw new Error("PNG export failed (toBlob returned null).");
 
-      // Write correct DPI into PNG pHYs chunk
       const fixed = await setPngDpi(blob, ppi);
       return { blob: fixed, ppi, wPx, hPx };
     }
@@ -871,14 +986,13 @@
         return;
       }
 
-      const outWIn = parseInchesOrDefault(outWInEl.value, 8.5);
-      const outHIn = parseInchesOrDefault(outHInEl.value, 11);
-      const tileInches = parseInchesOrDefault(imgInEl.value, 1);
-      const gapIn  = Math.max(0, parseInchesOrDefault(gapInEl.value, 0));
-      const hexOn  = !!hexToggleEl.checked;
+      const outWIn      = parseInchesOrDefault(outWInEl.value, 8.5);
+      const outHIn      = parseInchesOrDefault(outHInEl.value, 11);
+      const tileInches  = parseInchesOrDefault(imgInEl.value, 1);
+      const gapIn       = Math.max(0, parseInchesOrDefault(gapInEl.value, 0));
+      const hexOn       = !!hexToggleEl.checked;
       const circleDiaIn = parseInchesOrDefault(circleDiaInEl.value, 6.25);
-
-      const base = `${originalFileBaseName} Random Pattern`;
+      const base        = `${originalFileBaseName} Random Pattern`;
 
       try {
         if (exportModeEl.value === "png") {
@@ -888,7 +1002,6 @@
           return;
         }
 
-        // pdf
         const pdfBlob = await exportPdf(outWIn, outHIn, tileInches, gapIn, hexOn, circleDiaIn);
         renderInfo.textContent = `PDF built. Sending download/share…`;
         await deliverPdfBlob(pdfBlob, `${base}.pdf`);
@@ -900,48 +1013,38 @@
 
     // ---------- pan/zoom preview ----------
     let isPanning = false;
-    let panStart = null;
+    let panStart  = null;
 
     canvas.addEventListener("pointerdown", (e) => {
       canvas.setPointerCapture(e.pointerId);
       isPanning = true;
-      panStart = { x: e.clientX, y: e.clientY, camX: previewCam.xIn, camY: previewCam.yIn };
+      panStart  = { x: e.clientX, y: e.clientY, camX: previewCam.xIn, camY: previewCam.yIn };
     });
 
     canvas.addEventListener("pointermove", (e) => {
       if (!isPanning || !panStart) return;
-
       const outWIn = parseInchesOrDefault(outWInEl.value, 8.5);
       const outHIn = parseInchesOrDefault(outHInEl.value, 11);
-
-      const rect = canvas.getBoundingClientRect();
+      const rect   = canvas.getBoundingClientRect();
       const pxPerInCss = rect.width / PREVIEW_IN;
-
       const dxInPreview = (e.clientX - panStart.x) / pxPerInCss;
       const dyInPreview = (e.clientY - panStart.y) / pxPerInCss;
-
-      const dxOut = dxInPreview / previewCam.zoom;
-      const dyOut = dyInPreview / previewCam.zoom;
-
-      previewCam.xIn = panStart.camX - dxOut;
-      previewCam.yIn = panStart.camY - dyOut;
-
+      previewCam.xIn = panStart.camX - dxInPreview / previewCam.zoom;
+      previewCam.yIn = panStart.camY - dyInPreview / previewCam.zoom;
       clampPreviewCam(outWIn, outHIn);
       renderPreview();
     });
 
     function endPan() { isPanning = false; panStart = null; }
-    canvas.addEventListener("pointerup", endPan);
+    canvas.addEventListener("pointerup",     endPan);
     canvas.addEventListener("pointercancel", endPan);
 
     canvas.addEventListener("wheel", (e) => {
       e.preventDefault();
-      const outWIn = parseInchesOrDefault(outWInEl.value, 8.5);
-      const outHIn = parseInchesOrDefault(outHInEl.value, 11);
-
-      const factor = (e.deltaY < 0) ? 1.12 : (1 / 1.12);
+      const outWIn  = parseInchesOrDefault(outWInEl.value, 8.5);
+      const outHIn  = parseInchesOrDefault(outHInEl.value, 11);
+      const factor  = (e.deltaY < 0) ? 1.12 : (1 / 1.12);
       previewCam.zoom = clamp(previewCam.zoom * factor, 1, 8);
-
       clampPreviewCam(outWIn, outHIn);
       renderPreview();
     }, { passive: false });
@@ -954,7 +1057,7 @@
     canvas.addEventListener("pointerdown", (e) => {
       activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       if (activePointers.size === 2) {
-        const pts = Array.from(activePointers.values());
+        const pts  = Array.from(activePointers.values());
         pinchStart = { d: dist(pts[0], pts[1]), zoom: previewCam.zoom };
       }
     });
@@ -962,16 +1065,13 @@
     canvas.addEventListener("pointermove", (e) => {
       if (!activePointers.has(e.pointerId)) return;
       activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
       if (activePointers.size === 2 && pinchStart) {
         const outWIn = parseInchesOrDefault(outWInEl.value, 8.5);
         const outHIn = parseInchesOrDefault(outHInEl.value, 11);
-
-        const pts = Array.from(activePointers.values());
-        const dNow = dist(pts[0], pts[1]);
+        const pts    = Array.from(activePointers.values());
+        const dNow   = dist(pts[0], pts[1]);
         if (pinchStart.d > 0) {
-          const ratio = dNow / pinchStart.d;
-          previewCam.zoom = clamp(pinchStart.zoom * ratio, 1, 8);
+          previewCam.zoom = clamp(pinchStart.zoom * (dNow / pinchStart.d), 1, 8);
           clampPreviewCam(outWIn, outHIn);
           renderPreview();
         }
@@ -987,17 +1087,20 @@
       if (activePointers.size < 2) pinchStart = null;
     });
 
-    // ---------- buttons ----------
+    // ---------- buttons & change listeners ----------
     renderBtn.addEventListener('click', renderPreview);
     exportBtn.addEventListener('click', exportNow);
 
     [imgInEl, gapInEl, outWInEl, outHInEl, circleDiaInEl].forEach(el => {
       el.addEventListener("change", renderPreview);
     });
-    [hexToggleEl, vectorToggleEl, exportModeEl].forEach(el => el.addEventListener("change", renderPreview));
+    [hexToggleEl, vectorToggleEl, exportModeEl].forEach(el =>
+      el.addEventListener("change", renderPreview)
+    );
 
     // Initial draw
     renderPreview();
   </script>
+
 </body>
 </html>
